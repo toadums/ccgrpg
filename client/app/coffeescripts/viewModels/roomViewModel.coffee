@@ -86,7 +86,7 @@ class RoomViewModel
 
     @socket.on "PlayerLife", (data) =>
       return unless (player = @findPlayer(data.id))?
-      player.life data.life
+      player().life data.life
 
     @socket.on "CardMoved", (data) =>
       return unless (card = @findCard data.cardId)
@@ -143,14 +143,25 @@ class RoomViewModel
       @activePlayer().startTurn()
 
     @socket.on "ActiveChanged", (data) =>
-      return unless (card = @findCard(data.cardId))?
-      @active card
-      @target null
+      if not data.id? then @active null
+      if (card = @findCard(data.id))?
+        @active card
+        @target null
+      else
+        return unless (player = @findPlayer(data.id))?
+        @active player
+        @target null
 
     @socket.on "TargetChanged", (data) =>
-      return unless (card = @findCard(data.cardId))?
-      @target card
+      if not data.id? then @target null
+      if (card = @findCard(data.id))?
+        @target card
+      else
+        return unless (player = @findPlayer(data.id))?
+        @target player()
 
+    @socket.on "CardRemove", (data) =>
+      @removeCard data.cardId
 
   addOrCreatePlayer: (data) =>
     return unless data?
@@ -206,24 +217,49 @@ class RoomViewModel
 
   cardClick: (data, ui) =>
     return unless @player()?.isActivePlayer()
+
+    if @active() is data and @target()?
+      if @active() instanceof Spell then @castSpell()
+      if @active() instanceof Monster then @attack()
+      return
+
     if _.contains @player().activeCards.cards(), data
       if not @active()?
         @active data
-        @socket.emit "ActiveChanged", {cardId: data.id()}
+        @socket.emit "ActiveChanged", {id: data.id()}
         return
       else if @active() is data
         @active null
         @target null
-        @socket.emit "ActiveChanged", {cardId: null}
+        @socket.emit "ActiveChanged", {id: null}
         return
 
     if @active()?
       if @target() is data
         @target null
-        @socket.emit "TargetChanged", {cardId: null}
+        @socket.emit "TargetChanged", {id: null}
       else if @active()?
         @target data
-        @socket.emit "TargetChanged", {cardId: data.id()}
+        @socket.emit "TargetChanged", {id: data.id()}
+
+  playerClick: (data, ui) =>
+    return unless @player()?.isActivePlayer()
+    if @active()?
+      if @target() is data
+        @target null
+        @socket.emit "TargetChanged", {id: null}
+      else
+        @target data
+        @socket.emit "TargetChanged", {id: data.id()}
+
+  castSpell: () =>
+    @socket.emit "SpellCast",
+      active: @active().id()
+      target: @target().id()
+
+  removeCard: (id) =>
+    @player1().activeCards.remove(id)
+    @player2().activeCards.remove(id)
 
 
 

@@ -8,7 +8,6 @@ Control = require './decks/control'
 
 class Client
   constructor: (@socket) ->
-
     @player = new Player()
     Rooms.Lobby.addPlayer @player
 
@@ -87,6 +86,11 @@ class Client
       card.x = data.x
       card.y = data.y
 
+      @player.play card.id
+
+      room = Rooms[@player.room]
+      room.activeCards[card.id] = card
+
       card = _.extend card, {type: card.constructor.name}
 
       io.sockets.in(@player.room).emit "CardPlayed",
@@ -106,15 +110,48 @@ class Client
 
     @socket.on "ActiveChanged", (data) =>
       room = Rooms[@player.room]
-      room.active = room.allCards[data.cardId]
+      if data.id is null
+        room.active = null
+      else
 
+        card = room.activeCards[data.id]
+        if not card?
+          player = if room.player1.id is data.id then room.player1 else if room.player2.id is data.id then room.player2
+
+        room.active = card or player
       io.sockets.in(@player.room).emit "ActiveChanged", data
 
     @socket.on "TargetChanged", (data) =>
       room = Rooms[@player.room]
-      room.target = room.allCards[data.cardId]
+      if data.id is null
+        room.active = null
+      else
+        card = room.activeCards[data.id]
+        if not card?
+          player = if room.player1.id is data.id then room.player1 else if room.player2.id is data.id then room.player2
+
+        room.target = card or player
 
       io.sockets.in(@player.room).emit "TargetChanged", data
+
+    @socket.on "SpellCast", (data) =>
+      room = Rooms[@player.room]
+
+      card = room.activeCards[data.active]
+      target = if room.player1.id is data.target then room.player1 else if room.player2.id is data.target then room.player2 else room.activeCards[data.target]
+      console.log card
+      _.each card.abilities, (ab) =>
+        ab.cast(target, (type, message) =>
+          io.sockets.in(@player.room).emit type, message)
+
+      room.removeCard card.id
+
+      io.sockets.in(@player.room).emit "CardRemove", {cardId: card.id}
+
+      io.sockets.in(@player.room).emit "ActiveChanged", {id: null}
+      io.sockets.in(@player.room).emit "TargetChanged", {id: null}
+
+
 
 module.exports = Client
 

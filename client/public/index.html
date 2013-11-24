@@ -24,6 +24,13 @@
         <!-- /ko -->
 
         <article class="player-info my">
+          <aside class="player" data-bind="
+            click: $parent.playerClick,
+            css: {
+              target: $parent.target() == $data
+            }
+
+            "></aside>
           <div class="name" data-bind="text: name"></div>
           <ul class="stats" data-bind="foreach: stats">
             <li data-bind="attr: {class: name}, css:{add:$parent.showResourceAdd}, click: add">
@@ -48,7 +55,14 @@
         <!-- /ko -->
 
         <article class="player-info opponent">
-          <div class="name" data-bind="text: name"></div>
+          <aside class="player" data-bind="
+            click: $parent.playerClick,
+            css: {
+              target: $parent.target() == $data
+            }
+
+            "></aside>
+            <div class="name" data-bind="text: name"></div>
           <ul class="stats" data-bind="foreach: stats">
             <li data-bind="attr: {class: name}">
               <img data-bind="attr: {src:'images/' + name() + '.png'}">

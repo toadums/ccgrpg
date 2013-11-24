@@ -13,6 +13,7 @@ class Room
     @activePlayer = null
 
     @allCards = {}
+    @activeCards = {}
 
     @active = null
     @target = null
@@ -50,8 +51,8 @@ class Room
         deck: _.map @player2.deck, (card) => {id: card.id, x: card.x, y: card.y}
 
     for i in [1..5] by 1
-      @player1.draw (message) => io.sockets.in(@name).emit("CardDraw", message)
-      @player2.draw (message) => io.sockets.in(@name).emit("CardDraw", message)
+      @player1.draw (type, message) => io.sockets.in(@name).emit(type, message)
+      @player2.draw (type, message) => io.sockets.in(@name).emit(type, message)
 
     @changeTurns()
 
@@ -71,8 +72,17 @@ class Room
       player = @player1
 
     player.hasUsedResource = false
-
+    player.draw (type, message) => io.sockets.in(@name).emit(type, message)
     io.sockets.in(@name).emit "TurnStart",
       activePlayer: @activePlayer
 
+  removeCard: (id) =>
+    delete @activeCards[id]
+    delete @player1.activeCards[id]
+    delete @player2.activeCards[id]
+
+
 module.exports = Room
+
+
+

@@ -3,6 +3,8 @@ _ = require 'underscore'
 Cards = require './cards/cards'
 
 Damage = require './abilities/damage'
+Draw = require './abilities/draw'
+Heal = require './abilities/heal'
 
 util = require './util'
 
@@ -25,6 +27,8 @@ class Card
 
   getAbility: (data) =>
     if data.name is 'damage' then new Damage data
+    else if data.name is 'draw' then new Draw data
+    else if data.name is 'heal' then new Heal data
 
 class Monster extends Card
   constructor: (Data) ->
