@@ -1,0 +1,14 @@
+{
+  "name": "Corgi-Cards",
+  "description": "Super awesomec card game",
+  "author": "Paul Demchuk",
+  "dependencies": {
+    "underscore": "*",
+    "express": "*",
+    "async": ""
+  },
+  "devDependencies": {
+    "vows": "0.5.x"
+  },
+  "engine": "node >= 0.4.1"
+}

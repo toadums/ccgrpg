@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORGI CARDS: WITH A VENGEANCE</title>
+  <link rel="stylesheet" href="stylesheets/style.css" type="text/css" media="screen" charset="utf-8">
+  <link rel="stylesheet" href="stylesheets/animate.css" type="text/css" media="screen" charset="utf-8">
+
+</head>
+
+<body>
+
+  <!-- ko if: loggedIn -->
+    <!-- ko with: room -->
+
+      <section id="board" data-bind="droppable: {drop: handleDrop, accept: '.my.hand .card'}, foreach: activeCards">
+        <!-- ko template: {name: 'template-card'} --><!-- /ko -->
+      </section>
+
+      <!-- ko with: player -->
+        <!-- ko with: hand -->
+        <article class="hand my" data-bind="foreach: cards">
+          <!-- ko template: {name: 'template-card'} --><!-- /ko -->
+        </article>
+        <!-- /ko -->
+
+        <article class="player-info my">
+          <div class="name" data-bind="text: name"></div>
+          <ul class="stats" data-bind="foreach: stats">
+            <li data-bind="attr: {class: name}, css:{add:$parent.showResourceAdd}, click: add">
+              <img data-bind="attr: {src:'images/' + name() + '.png'}">
+              <span class="count" data-bind="text: remaining() + '/' + total()"></span>
+            </li>
+          </ul>
+          <div class="life" data-bind="text: 'Life: ' + life()"></div>
+        </article>
+
+        <!-- ko if: isActivePlayer -->
+          <button class="endTurn" data-bind="click: $parent.endTurn">End my turn!</button>
+        <!-- /ko -->
+
+      <!-- /ko -->
+
+      <!-- ko with: opponent -->
+        <!-- ko with: hand -->
+        <article class="hand" data-bind="foreach: cards">
+          <!-- ko template: {name: 'template-card'} --><!-- /ko -->
+        </article>
+        <!-- /ko -->
+
+        <article class="player-info opponent">
+          <div class="name" data-bind="text: name"></div>
+          <ul class="stats" data-bind="foreach: stats">
+            <li data-bind="attr: {class: name}">
+              <img data-bind="attr: {src:'images/' + name() + '.png'}">
+              <span class="count" data-bind="text: remaining() + '/' + total()"></span>
+            </li>
+          </ul>
+          <div class="life" data-bind="text: 'Life: ' + life()"></div>
+
+        </article>
+
+      <!-- /ko -->
+
+      <form data-bind="submit: onSubmit" -->
+        <label>Join Room: <input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'"></label>
+      </form>
+
+    <!-- /ko -->
+  <!-- /ko -->
+
+  <!-- ko ifnot: loggedIn -->
+    <!-- ko with: server.login -->
+    <form data-bind="submit: onSubmit" -->
+      <label>Username: <input type="text" data-bind="value: username, valueUpdate: 'afterkeydown'"></label>
+    </form>
+    <!-- /ko -->
+  <!-- /ko -->
+
+
+  <script src="javascripts/socket.io.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.0.0/knockout-min.js"></script>
+  <script type="text/javascript" src="http://code.createjs.com/createjs-2013.09.25.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+  <script type="text/javascript" src="javascripts/app.js"></script>
+
+</body>
+
+</html>
+
+<script type="text/html" id="template-card">
+
+  <div class="card" data-bind="
+  draggable: {drag: $parents[1].handDrag, enabled: $parents[1].canDrag},
+  click: $parent.cardClick,
+  attr: {
+    id: 'card_'+id(),
+    'data-type': name
+  },
+  css: {
+    active: $parent.active() == $data,
+    target: $parent.target() == $data
+  }
+  ">
+
+  </div>
+
+
+</script>
