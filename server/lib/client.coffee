@@ -72,7 +72,6 @@ class Client
       card.x = data.x
       card.y = data.y
 
-
     @socket.on "CardDropped", (data) =>
       return unless (card = Rooms[@player.room].getCard data.cardId)?
 
@@ -100,12 +99,10 @@ class Client
     @socket.on "StatAdd", (data) =>
 
       room = Rooms[@player.room]
-
       if @player.hasUsedResource or room.activePlayer isnt @player.id
         console.log "Player tried to add a resource when they really shouldn't have..."
         return
       @player.addStat data.stat
-
       io.sockets.in(@player.room).emit "StatAdd", data
 
     @socket.on "ActiveChanged", (data) =>
@@ -139,7 +136,7 @@ class Client
 
       card = room.activeCards[data.active]
       target = if room.player1.id is data.target then room.player1 else if room.player2.id is data.target then room.player2 else room.activeCards[data.target]
-      console.log card
+
       _.each card.abilities, (ab) =>
         ab.cast(target, (type, message) =>
           io.sockets.in(@player.room).emit type, message)
@@ -151,6 +148,45 @@ class Client
       io.sockets.in(@player.room).emit "ActiveChanged", {id: null}
       io.sockets.in(@player.room).emit "TargetChanged", {id: null}
 
+    @socket.on "Attack", (data) =>
+      room = Rooms[@player.room]
+
+      attacker = room.activeCards[data.attacker]
+
+      return if attacker.exhausted
+
+      if (defender = room.activeCards[data.defender])?
+
+        # TODO On attack abilities cast here?
+
+        attacker.health -= defender.attack
+        defender.health -= attacker.attack
+
+        io.sockets.in(@player.room).emit "MonsterLife", {cardId: attacker.id, life: attacker.health}
+        io.sockets.in(@player.room).emit "MonsterLife", {cardId: defender.id, life: defender.health}
+
+        if attacker.health <= 0
+          room.removeCard attacker.id
+          io.sockets.in(@player.room).emit "CardRemove", {cardId: attacker.id}
+        if defender.health <= 0
+          room.removeCard defender.id
+          io.sockets.in(@player.room).emit "CardRemove", {cardId: defender.id}
+      else
+        if data.defender is room.player1.id
+          defender = room.player1
+        else if data.defender is room.player2.id
+          defender = room.player2
+        else return
+
+        defender.life -= attacker.attack
+        io.sockets.in(@player.room).emit "PlayerLife", {id: defender.id, life: defender.life}
+
+      attacker.exhausted = true
+
+      io.sockets.in(@player.room).emit "ActiveChanged", {id: null}
+      io.sockets.in(@player.room).emit "TargetChanged", {id: null}
+
+      io.sockets.in(@player.room).emit "MonsterExhaust", {cardId: attacker.id, value: attacker.exhausted}
 
 
 module.exports = Client

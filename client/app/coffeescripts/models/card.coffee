@@ -6,6 +6,8 @@ class Card
     @imgSrc = ko.observable(data.imgSrc or "")
     @name = ko.observable(data.name or "opponent")
 
+    @exhausted = ko.observable false
+
     @x = ko.observable(data.x or 200)
     @y = ko.observable(data.y or 200)
 
@@ -24,7 +26,6 @@ class Monster extends Card
     @attack = ko.observable(data.attack or 0)
     @health = ko.observable(data.health or 0)
 
-    @exhausted = ko.observable false
 
 class Spell extends Card
   constructor: (data) ->

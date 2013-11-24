@@ -24,6 +24,7 @@ class Card
 
     @discard      = false
 
+    @exhausted    = false
 
   getAbility: (data) =>
     if data.name is 'damage' then new Damage data
@@ -31,13 +32,11 @@ class Card
     else if data.name is 'heal' then new Heal data
 
 class Monster extends Card
-  constructor: (Data) ->
+  constructor: (data) ->
     super data
 
     @attack       = data.attack or 0
     @health       = data.health or 0
-
-    @exhausted    = false
 
 class Spell extends Card
   constructor: (data) ->

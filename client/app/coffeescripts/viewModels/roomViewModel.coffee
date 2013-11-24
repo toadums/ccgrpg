@@ -88,6 +88,18 @@ class RoomViewModel
       return unless (player = @findPlayer(data.id))?
       player().life data.life
 
+    @socket.on "MonsterLife", (data) =>
+      return unless (card = @findCard(data.cardId))?
+      return unless card instanceof Monster
+
+      card.health data.life
+
+    @socket.on "MonsterExhaust", (data) =>
+      return unless (card = @findCard(data.cardId))?
+      return unless card instanceof Monster
+
+      card.exhausted(data.value or true)
+
     @socket.on "CardMoved", (data) =>
       return unless (card = @findCard data.cardId)
       card.x data.x
@@ -256,6 +268,11 @@ class RoomViewModel
     @socket.emit "SpellCast",
       active: @active().id()
       target: @target().id()
+
+  attack: () =>
+    @socket.emit "Attack",
+      attacker: @active().id()
+      defender: @target().id()
 
   removeCard: (id) =>
     @player1().activeCards.remove(id)

@@ -3,6 +3,8 @@ _ = require 'underscore'
 
 Player = require './player'
 
+{Monster, Spell} = require './card'
+
 class Room
   constructor: (@name) ->
 
@@ -73,6 +75,14 @@ class Room
 
     player.hasUsedResource = false
     player.draw (type, message) => io.sockets.in(@name).emit(type, message)
+
+    _.each player.activeCards, (value, key) =>
+      if value instanceof Monster
+        value.exhausted = false
+
+    _.each player.stats, (stat) =>
+      stat.remaining = stat.total
+
     io.sockets.in(@name).emit "TurnStart",
       activePlayer: @activePlayer
 

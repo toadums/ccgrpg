@@ -60,9 +60,12 @@ class Player
       if card instanceof Monster
         card.exhausted false
 
-      @resourceUsed false
+    @resourceUsed false
 
-      # TODO: Can move your cards on BF. Turn off opps ability to move theirs
+    _.each @stats, (stat) =>
+      stat.remaining stat.total()
+
+    # TODO: Can move your cards on BF. Turn off opps ability to move theirs
 
   play: (id, x, y) =>
     return unless (card = @hand.remove(id))?

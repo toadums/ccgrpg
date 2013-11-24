@@ -4,6 +4,7 @@ async = require 'async'
 {guid} = require './util'
 
 Control = require './decks/control'
+RDW = require './decks/rdw'
 class Player
   constructor: () ->
 
@@ -11,17 +12,18 @@ class Player
     @name = ""
     @room = "Lobby"
 
-    @deck = (new Control()).cards
+    @deck = (new RDW()).cards
     @hand = {}
     @activeCards = {}
 
     @strength = new Stat
     @intel = new Stat
 
+    @stats = [@strength, @intel]
+
     @hasUsedResource = false
 
     @life = 30
-
 
   draw: (cb) =>
     topCard = @deck.splice(0,1)[0]
@@ -54,7 +56,6 @@ class Stat
     @remaining += amount
 
   decrease: (amount = 1) =>
-    @total -= amount
     @remaining -= amount
 
 module.exports = Player
