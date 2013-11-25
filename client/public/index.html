@@ -145,6 +145,12 @@
         <li class="damage animated fadeOutUpBig" data-bind="text: $data"></li>
       </ul>
     <!-- /ko -->
+    <!-- ko if: isSpell -->
+      <span class="stat spell">
+        <span class="number" data-bind="text: abilityValue"></span>
+      </span>
+    <!-- /ko -->
+
     </div>
   </div>
 

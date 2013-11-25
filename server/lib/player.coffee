@@ -12,7 +12,7 @@ class Player
     @name = ""
     @room = "Lobby"
 
-    @deck = (new RDW()).cards
+    @deck = _.shuffle((new RDW()).cards)
     @hand = {}
     @activeCards = {}
 

@@ -16,6 +16,8 @@ class Card
     @x = ko.observable(data.x or 200)
     @y = ko.observable(data.y or 200)
 
+    @abilityValue = ko.observable(data.abilities?[0]?.value or 0)
+
     @x.subscribe (val) =>
       $cardvm = $("#card_#{@id()}")
 

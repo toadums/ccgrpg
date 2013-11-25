@@ -47,7 +47,6 @@ class Client
       deck = _.map @player.deck, (card) =>
         _.extend card, {type: card.constructor.name}
 
-
       @socket.emit "DeckList", {playerId: @player.id, deck: deck}
 
       async.each(
