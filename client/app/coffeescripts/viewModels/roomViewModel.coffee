@@ -81,7 +81,7 @@ class RoomViewModel
       card = player().draw(data.cardId)
 
       if player() is @player1()
-        card.x 500
+        card.x -100
       else
         card.x 100
 
@@ -89,14 +89,21 @@ class RoomViewModel
 
     @socket.on "PlayerLife", (data) =>
       return unless (player = @findPlayer(data.id))?
+
+      diff = player().life() - data.life
+      player().showDamage diff
+
       player().life data.life
 
     @socket.on "MonsterLife", (data) =>
-      console.log "a"
-      return unless (card = @findCard(data.cardId))?
+      return unless (card = @findCard(data.id))?
       return unless card instanceof Monster
 
-      console.log "here"
+      diff = card.health() - data.life
+      card.showDamage diff
+
+      if data.life <= 0
+        card.isDead true
 
       card.health data.life
 
@@ -187,7 +194,6 @@ class RoomViewModel
       @player2 null
 
       @name "Lobby"
-
 
     @socket.on "PlayerLeft", () =>
       @socket.emit "PlayerLeft"

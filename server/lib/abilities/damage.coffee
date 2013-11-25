@@ -14,4 +14,5 @@ class Damage extends Ability
     cb "MonsterLife", {id: target.id, life: target.health}
 
 
+
 module.exports = Damage

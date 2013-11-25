@@ -93,6 +93,11 @@ class Room
     delete @player1.activeCards[id]
     delete @player2.activeCards[id]
 
+  cleanup: (cb) =>
+    _.each @activeCards, (card) =>
+      if card.constructor.name.toLowerCase() is 'monster' and card.health <= 0
+        @removeCard card.id
+        cb { cardId: card.id }
 
 module.exports = Room
 

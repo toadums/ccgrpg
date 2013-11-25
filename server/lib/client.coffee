@@ -62,6 +62,7 @@ class Client
       gameData = room.startNewGame(@socket)
 
     @socket.on "TurnEnd", () =>
+      Rooms[@player.room].cleanup (message) => io.sockets.in(@player.room).emit "CardRemove", message
       Rooms[@player.room].changeTurns()
 
     @socket.on "CardMoved", (data) =>
@@ -161,15 +162,9 @@ class Client
         attacker.health -= defender.attack
         defender.health -= attacker.attack
 
-        io.sockets.in(@player.room).emit "MonsterLife", {cardId: attacker.id, life: attacker.health}
-        io.sockets.in(@player.room).emit "MonsterLife", {cardId: defender.id, life: defender.health}
+        io.sockets.in(@player.room).emit "MonsterLife", {id: attacker.id, life: attacker.health}
+        io.sockets.in(@player.room).emit "MonsterLife", {id: defender.id, life: defender.health}
 
-        if attacker.health <= 0
-          room.removeCard attacker.id
-          io.sockets.in(@player.room).emit "CardRemove", {cardId: attacker.id}
-        if defender.health <= 0
-          room.removeCard defender.id
-          io.sockets.in(@player.room).emit "CardRemove", {cardId: defender.id}
       else
         if data.defender is room.player1.id
           defender = room.player1

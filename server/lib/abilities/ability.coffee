@@ -1,5 +1,4 @@
 Player = require '../player'
-{Monster, Spell} = require '../cards'
 
 class Ability
   constructor: (data) ->
@@ -8,12 +7,12 @@ class Ability
 
   cast: (target, cb) =>
 
+    type = target.constructor.name.toLowerCase()
+
     # TODO make sure valid target!!
-    console.log Monster, Player
-    if target instanceof Player.constructor
+    if type is 'player'
       @toPlayer target, cb
-    else if target instanceof Monster.constructor
-      console.log "THISGUY"
+    else if type is 'monster'
       @toMonster target, cb
 
 module.exports = Ability

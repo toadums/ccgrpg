@@ -25,13 +25,14 @@ body
   //font-family: "card-text"
   // font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
 
-.yougotfucked
+.damage.animated
   -webkit-animation-duration: 10s !important
   font-size: 30px
   font-weight: bold
   color: red
 
 .card
+  $border-rad: 11px
   position: absolute
   width: 140px
   height: 198px
@@ -40,7 +41,7 @@ body
 
   font-size: 46px
 
-  border-radius: 11px
+  border-radius: $border-rad
 
   text-shadow: 2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 2px 2px black, -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black
 
@@ -74,6 +75,18 @@ body
   &.spell .cost
     bottom: 6px
     right: 10px
+
+  &.dead
+    &::after
+      content: " "
+      position: absolute
+      border-radius: $border-rad
+      top: 0
+      left: 0
+      bottom: 0
+      right: 0
+      background-color: red
+      opacity: 0.3
 
   &[data-type="OneOne"]
     background: url('/images/peasant.jpg')
@@ -147,7 +160,7 @@ body
   position: relative
 
 .endTurn
-  width: 100px
+  width: 200px
   height: 50px
 
   background-color: yellow
@@ -159,8 +172,13 @@ body
   border: solid 1px black
 
   position: absolute
-  right: 425px
-  top: 125px
+  left: 50%
+  margin-left: -100px
+  bottom: 75px
+
+  -webkit-animation-duration: 5s
+  -webkit-animation-delay: 20s
+  -webkit-animation-iteration-count: 1
 
   &:hover
     background-color: #ddd
@@ -211,6 +229,13 @@ body
 .player-info
   position: absolute
   bottom: 20px
+
+  .damage-indicator
+    li
+      position: absolute
+      top: 0
+      left: 0
+
 
   &.my
     left: 20px

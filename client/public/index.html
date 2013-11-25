@@ -40,10 +40,13 @@
             </li>
           </ul>
           <div class="life" data-bind="text: 'Life: ' + life()"></div>
+          <ul class="damage-indicator" data-bind="foreach: damage">
+            <li class="damage animated fadeOutUpBig" data-bind="text: $data"></li>
+          </ul>
         </article>
 
         <!-- ko if: isActivePlayer -->
-          <button class="endTurn" data-bind="click: $parent.endTurn">End my turn!</button>
+          <button class="endTurn animated tada" data-bind="click: $parent.endTurn">End my turn!</button>
         <!-- /ko -->
 
       <!-- /ko -->
@@ -71,7 +74,9 @@
             </li>
           </ul>
           <div class="life" data-bind="text: 'Life: ' + life()"></div>
-
+          <ul class="damage-indicator" data-bind="foreach: damage">
+            <li class="damage animated fadeOutUpBig" data-bind="text: $data"></li>
+          </ul>
         </article>
 
       <!-- /ko -->
@@ -120,6 +125,9 @@
   css: {
     active: $parent.active() == $data,
     target: $parent.target() == $data,
+    spell: isSpell,
+    monster: isMonster,
+    dead: isDead,
     exhausted: exhausted
   }
   ">
@@ -133,6 +141,9 @@
         <img src="/images/shield.png">
         <span class="number" data-bind="text: health"></span>
       </span>
+      <ul class="damage-indicator" data-bind="foreach: damage">
+        <li class="damage animated fadeOutUpBig" data-bind="text: $data"></li>
+      </ul>
     <!-- /ko -->
     </div>
   </div>

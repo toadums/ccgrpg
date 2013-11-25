@@ -31,6 +31,11 @@ class Player
     @canDrag = ko.computed =>
       @player() is @
 
+    @damage = ko.observableArray []
+
+  showDamage: (amount) =>
+    @damage.push amount
+
   clear: () =>
     @activeCards.clear()
     @hand.clear()
