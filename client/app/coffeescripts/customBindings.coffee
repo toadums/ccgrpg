@@ -15,4 +15,3 @@ ko.bindingHandlers.droppable =
       element = $(element)
 
       $(element).droppable(options)
-      $(element).on 'drop', options.drop

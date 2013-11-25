@@ -69,7 +69,6 @@ class RoomViewModel
 
     @socket.on "StatAdd", (data) =>
       return unless (player = @findPlayer data.playerId)
-      console.log data
       player().addStat data.stat
 
     @socket.on "DeckList", (data) =>
@@ -79,7 +78,7 @@ class RoomViewModel
     @socket.on "CardDraw", (data) =>
       return unless (player = @findPlayer(data.playerId))
       card = player().draw(data.cardId)
-      console.log "!x!"
+
       if player() is @player1()
         card.x 500
       else
@@ -225,10 +224,13 @@ class RoomViewModel
     return card if card?
 
   handleDrop: (data, ui) =>
+
+
     $board = $("#board")
     $card = $(ui.helper)
 
     card = ko.dataFor $card.get(0)
+    return if _.contains(@activeCards(), card)
 
     x = $card.offset().left - $board.offset().left
     y = $card.offset().top - $board.offset().top
