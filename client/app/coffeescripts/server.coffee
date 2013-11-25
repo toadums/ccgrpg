@@ -4,7 +4,7 @@ class Server
     @socket = io.connect(@host)
 
     @socket.emit "UserConnected", Math.random()
-    @socket.emit "RoomChange", {name: "r1"}
+    # @socket.emit "RoomChange", {name: "r1"}
 
     console.log "You are connected to: #{@host}"
 

@@ -46,6 +46,20 @@ class Player
 
     @hasUsedResource = true
 
+  clear: () =>
+    @deck = (new RDW()).cards
+    @hand = {}
+    @activeCards = {}
+
+    @strength = new Stat
+    @intel = new Stat
+
+    @stats = [@strength, @intel]
+
+    @hasUsedResource = false
+
+    @life =  30
+
 class Stat
   constructor: () ->
     @total = 0

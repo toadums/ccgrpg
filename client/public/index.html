@@ -10,8 +10,9 @@
 <body>
 
   <!-- ko if: loggedIn -->
-    <!-- ko with: room -->
 
+    <!-- ko with: room -->
+      <!-- ko ifnot: name() == 'Lobby' -->
       <section id="board" data-bind="droppable: {drop: handleDrop, accept: '.my.hand .card'}, foreach: activeCards">
         <!-- ko template: {name: 'template-card'} --><!-- /ko -->
       </section>
@@ -75,10 +76,14 @@
 
       <!-- /ko -->
 
-      <form data-bind="submit: onSubmit" -->
-        <label>Join Room: <input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'"></label>
-      </form>
 
+      <!-- /ko -->
+      <!-- ko if: name() == "Lobby" -->
+        You are in the lobby...<br>
+        <form data-bind="submit: onSubmit" -->
+          <label>Join Room: <input type="text" data-bind="value: newName, valueUpdate: 'afterkeydown'"></label>
+        </form>
+      <!-- /ko -->
     <!-- /ko -->
   <!-- /ko -->
 
@@ -118,7 +123,18 @@
     exhausted: exhausted
   }
   ">
-
+    <span class="cost" data-bind="text: cost"></span>
+    <!-- ko if: isMonster -->
+      <span class="stat atk">
+        <img src="/images/single-sword.png">
+        <span class="number" data-bind="text: attack"></span>
+      </span>
+      <span class="stat shield">
+        <img src="/images/shield.png">
+        <span class="number" data-bind="text: health"></span>
+      </span>
+    <!-- /ko -->
+    </div>
   </div>
 
 

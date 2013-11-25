@@ -38,6 +38,8 @@ class Room
   startNewGame: () =>
     return unless (@player1 and @player2)
 
+    # TODO: Shuffle
+
     # Determine who ISNT active player (this number is flipped in changeTurns)
     if (Math.floor(Math.random()*2))
       @activePlayer = @player1.id

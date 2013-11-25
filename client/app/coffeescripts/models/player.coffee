@@ -1,7 +1,6 @@
 class Player
   constructor: (@delegate, data) ->
     {
-      @name
       @socket
       @player
       @activePlayer
@@ -32,6 +31,16 @@ class Player
     @canDrag = ko.computed =>
       @player() is @
 
+  clear: () =>
+    @activeCards.clear()
+    @hand.clear()
+    @deck.clear()
+
+    @resourceUsed false
+
+    @life 30
+
+    _.each @stats, (stat) => stat.clear()
 
   addStat: (stat, amount=1) =>
     if stat is "strength"
@@ -91,6 +100,7 @@ class Player
     card.y ui.position.top
     @socket.emit "CardMoved", {cardId: card.id(), x: ui.position.left, y: ui.position.top}
 
+
 class Stat
   constructor: (@delegate, name) ->
     {
@@ -114,4 +124,8 @@ class Stat
     @socket.emit "StatAdd",
       playerId: @id()
       stat: @name()
+
+  clear: () =>
+    @total 0
+    @remaining 0
 

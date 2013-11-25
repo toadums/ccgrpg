@@ -8,6 +8,8 @@ class RoomViewModel
     @socket = @server.socket
     @name = ko.observable name
 
+    @newName = ko.observable @name()
+
     @player1 = ko.observable null
     @player2 = ko.observable null
 
@@ -63,6 +65,7 @@ class RoomViewModel
       player = @addOrCreatePlayer data
       @player(player)
       @loggedIn true
+      console.log player.name()
 
     @socket.on "StatAdd", (data) =>
       return unless (player = @findPlayer data.playerId)
@@ -76,7 +79,7 @@ class RoomViewModel
     @socket.on "CardDraw", (data) =>
       return unless (player = @findPlayer(data.playerId))
       card = player().draw(data.cardId)
-
+      console.log "!x!"
       if player() is @player1()
         card.x 500
       else
@@ -175,6 +178,17 @@ class RoomViewModel
     @socket.on "CardRemove", (data) =>
       @removeCard data.cardId
 
+    @socket.on "JoiningLobby", () =>
+      @player().clear()
+      @player1 null
+      @player2 null
+
+      @name "Lobby"
+
+
+    @socket.on "PlayerLeft", () =>
+      @socket.emit "PlayerLeft"
+
   addOrCreatePlayer: (data) =>
     return unless data?
     player = @findPlayer(data.id)?()
@@ -222,7 +236,8 @@ class RoomViewModel
     @socket.emit "CardDropped", {playerId: @player().id(), cardId: card.id(), x: x, y: y}
 
   onSubmit: () =>
-    @socket.emit "RoomChange", {name: @name()}
+    @socket.emit "RoomChange", {name: @newName()}
+    false
 
   endTurn: () =>
     @socket.emit "TurnEnd"

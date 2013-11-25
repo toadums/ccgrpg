@@ -18,17 +18,7 @@ io.set('log level', 0)
 console.log "Listening on port #{port}"
 
 
-root.Rooms =
-  r1: new Room "r1"
-  r2: new Room "r2"
-  r3: new Room "r3"
-  r4: new Room "r4"
-  r5: new Room "r5"
-  r6: new Room "r6"
-  r7: new Room "r7"
-  r8: new Room "r8"
-  r9: new Room "r9"
-  r10: new Room "r10"
+root.Rooms = {}
 
 Rooms.Lobby = new Room 'Lobby'
 

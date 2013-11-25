@@ -4,13 +4,25 @@ Player = require './player'
 Control = require './decks/control'
 
 {Monster, Spell} = require './card'
-
+Room = require './room'
 
 class Client
   constructor: (@socket) ->
     @player = new Player()
     Rooms.Lobby.addPlayer @player
 
+    @socket.on "disconnect", () =>
+      return if @player.room is "Lobby"
+      return unless (room = Rooms[@player.room])?
+      # TODO: Remove specators
+      delete Rooms[room.name]
+      @socket.broadcast.to(@player.room).emit "PlayerLeft"
+    @socket.on "PlayerLeft", () =>
+
+      @joinRoom(Rooms.Lobby)
+      @socket.emit "JoiningLobby"
+
+      @player.clear()
 
     @socket.on "UserConnected", (name) =>
 
@@ -19,31 +31,18 @@ class Client
 
       @player.name = name
       obj = {id: @player.id, name: @player.name}
-      io.sockets.in("Lobby").emit "UserConnected", obj
+      @socket.emit "UserConnected", obj
 
     @socket.on "RoomChange", (data) =>
-      return if not (room = Rooms[@player.room])?
-      @socket.leave @player.room
-      @socket.join data.name
+      if not (room = Rooms[data.name])?
+        room = (Rooms[data.name] = new Room data.name)
 
-      @player.room = data.name
+      @joinRoom room
 
-      room.removePlayer
-
-      newRoom = Rooms[data.name]
-      if not newRoom?
-        console.log "Room doesn't exist!!: \n #{data.name}"
-        return
-
-      startNew = not (newRoom.player1 && newRoom.player2)
-
-      newRoom.addPlayer @player
-
-      @socket.broadcast.to(data.name).emit "RoomPlayerEnter", {id: @player.id, name: @player.name}
       @socket.emit "RoomChange",
-        name: newRoom.name
-        player1: newRoom.player1
-        player2: newRoom.player2
+        name: room.name
+        player1: room.player1
+        player2: room.player2
 
       deck = _.map @player.deck, (card) =>
         _.extend card, {type: card.constructor.name}
@@ -54,13 +53,13 @@ class Client
       async.each(
         @player.deck
         (card, cb) =>
-          newRoom.allCards[card.id] = card
+          room.allCards[card.id] = card
           cb()
         (err) =>
           if err then console.log "Error in RoomChange, adding cards to allCards obj: \n #{err}"
       )
 
-      gameData = newRoom.startNewGame(@socket)
+      gameData = room.startNewGame(@socket)
 
     @socket.on "TurnEnd", () =>
       Rooms[@player.room].changeTurns()
@@ -188,6 +187,19 @@ class Client
 
       io.sockets.in(@player.room).emit "MonsterExhaust", {cardId: attacker.id, value: attacker.exhausted}
 
+  joinRoom: (room) =>
+      @socket.leave @player.room
+      @socket.join room.name
+
+      @player.room = room.name
+
+      room.removePlayer
+
+      startNew = not (room.player1 && room.player2)
+
+      room.addPlayer @player
+
+      @socket.broadcast.to(room.name).emit "RoomPlayerEnter", {id: @player.id, name: @player.name}
 
 module.exports = Client
 

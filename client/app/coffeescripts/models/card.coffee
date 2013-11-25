@@ -8,6 +8,9 @@ class Card
 
     @exhausted = ko.observable false
 
+    @isMonster = ko.observable false
+    @isSpell = ko.observable false
+
     @x = ko.observable(data.x or 200)
     @y = ko.observable(data.y or 200)
 
@@ -26,9 +29,13 @@ class Monster extends Card
     @attack = ko.observable(data.attack or 0)
     @health = ko.observable(data.health or 0)
 
+    @isMonster true
 
 class Spell extends Card
   constructor: (data) ->
     super data
 
     @positive = false
+    @type "spell"
+
+    @isSpell true
