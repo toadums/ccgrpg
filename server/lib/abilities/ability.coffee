@@ -1,5 +1,5 @@
 Player = require '../player'
-Monster = require('../card').Monster
+{Monster, Spell} = require '../cards'
 
 class Ability
   constructor: (data) ->
@@ -9,10 +9,11 @@ class Ability
   cast: (target, cb) =>
 
     # TODO make sure valid target!!
-
+    console.log Monster, Player
     if target instanceof Player.constructor
       @toPlayer target, cb
-    else if target instanceof Monster
+    else if target instanceof Monster.constructor
+      console.log "THISGUY"
       @toMonster target, cb
 
 module.exports = Ability

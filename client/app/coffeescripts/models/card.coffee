@@ -36,6 +36,5 @@ class Spell extends Card
     super data
 
     @positive = false
-    @type "spell"
 
     @isSpell true

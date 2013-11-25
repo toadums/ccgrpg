@@ -3,8 +3,7 @@ async = require 'async'
 
 {guid} = require './util'
 
-Control = require './decks/control'
-RDW = require './decks/rdw'
+{Control, RDW} = require './decks'
 class Player
   constructor: () ->
 

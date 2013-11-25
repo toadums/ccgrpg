@@ -1,9 +1,9 @@
 async = require 'async'
 _ = require 'underscore'
 Player = require './player'
-Control = require './decks/control'
+{Control} = require './decks'
 
-{Monster, Spell} = require './card'
+{Monster, Spell} = require './cards'
 Room = require './room'
 
 class Client

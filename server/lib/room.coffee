@@ -3,7 +3,7 @@ _ = require 'underscore'
 
 Player = require './player'
 
-{Monster, Spell} = require './card'
+{Monster, Spell} = require './cards'
 
 class Room
   constructor: (@name) ->

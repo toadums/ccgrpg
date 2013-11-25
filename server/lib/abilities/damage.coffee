@@ -9,7 +9,7 @@ class Damage extends Ability
     target.life -= @value
     cb "PlayerLife", {id: target.id, life: target.life}
 
-  toMonster:(target, cb) =>
+  toMonster: (target, cb) =>
     target.health -= @value
     cb "MonsterLife", {id: target.id, life: target.health}
 

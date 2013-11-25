@@ -1,6 +1,5 @@
-{Monster, Spell} = require '../card'
+{Monster, Spell, Cards} = require '../cards'
 Deck = require './deck'
-Cards = require '../cards/cards'
 
 class Control extends Deck
   constructor: () ->

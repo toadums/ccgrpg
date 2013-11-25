@@ -73,6 +73,7 @@ class RoomViewModel
 
     @socket.on "DeckList", (data) =>
       return unless (player = @findPlayer(data.playerId))
+      console.log data
       player().newDeck data.deck
 
     @socket.on "CardDraw", (data) =>
@@ -91,8 +92,11 @@ class RoomViewModel
       player().life data.life
 
     @socket.on "MonsterLife", (data) =>
+      console.log "a"
       return unless (card = @findCard(data.cardId))?
       return unless card instanceof Monster
+
+      console.log "here"
 
       card.health data.life
 

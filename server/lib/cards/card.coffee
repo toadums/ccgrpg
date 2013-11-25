@@ -1,12 +1,10 @@
 _ = require 'underscore'
 
-Cards = require './cards/cards'
+Cards = require './cards'
 
-Damage = require './abilities/damage'
-Draw = require './abilities/draw'
-Heal = require './abilities/heal'
+{Draw, Damage, Heal} = require '../abilities'
 
-util = require './util'
+util = require '../util'
 
 class Card
   constructor: (data) ->
@@ -31,18 +29,4 @@ class Card
     else if data.name is 'draw' then new Draw data
     else if data.name is 'heal' then new Heal data
 
-class Monster extends Card
-  constructor: (data) ->
-    super data
-
-    @attack       = data.attack or 0
-    @health       = data.health or 0
-
-class Spell extends Card
-  constructor: (data) ->
-    super data
-    @positive     = false
-
-module.exports =
-  Monster: Monster
-  Spell: Spell
+module.exports = Card
