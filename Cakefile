@@ -35,6 +35,9 @@ task 'watch', 'watch and compile changes in source dir', ->
   watch = exec "coffee -j #{outJS}.js -cwb #{strFiles}"
   sass  = exec "sass --watch client/app/sass:client/public/stylesheets"
 
+  vendor = exec "cp client/vendor/javascripts/* client/public/javascripts"
+  vendor = exec "cp client/vendor/stylesheets/* client/public/stylesheets"
+
   serv.stdout.on 'data', (data)-> process.stdout.write data
   watch.stdout.on 'data', (data)-> process.stdout.write data
   sass.stdout.on 'data', (data)-> process.stdout.write data
@@ -44,10 +47,13 @@ task 'watch', 'watch and compile changes in source dir', ->
   sass.stderr.on 'data', (data)-> process.stderr.write data
 
 task 'build', 'compiled the server into build/server', ->
+  mkpub  = exec "mkdir -p build/client build/client/public build/client/public/stylesheets"
+
   server = exec "coffee -co build/server server"
   watch  = exec "coffee -j #{outJS}.js -cb #{strFiles}"
-  sass   = exec "sass client/app/sass/style.sass:client/public/stylesheets/style.css"
+  sass   = exec "sass --watch client/app/sass:client/public/stylesheets"
 
   cppck  = exec "cp package.json build"
-  mkpub  = exec "mkdir -p build/client"
-  cppub  = exec "cp -client/public build/client"
+  cppub  = exec "cp -rf client/public build/client"
+
+  setTimeout (() => sass.kill()), 1000

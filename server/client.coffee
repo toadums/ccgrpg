@@ -39,7 +39,8 @@ class Client
         room = _.find Rooms, (value, key) =>
           not (value.player2? and value.player1?) and value.name isnt "Lobby"
         if not room?
-          room = (Rooms[data.name] = new Room Math.random())
+          room = new Room Math.random()
+          Rooms[room.name] = room
       else if not (room = Rooms[data.name])?
         room = (Rooms[data.name] = new Room data.name)
 
