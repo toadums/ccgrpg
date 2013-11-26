@@ -35,16 +35,20 @@ task 'watch', 'watch and compile changes in source dir', ->
   watch = exec "coffee -j #{outJS}.js -cwb #{strFiles}"
   sass  = exec "sass --watch client/app/sass:client/public/stylesheets"
 
-  vendor = exec "cp client/vendor/javascripts/* client/public/javascripts"
-  vendor = exec "cp client/vendor/stylesheets/* client/public/stylesheets"
+  vendorjs  = exec "cp client/vendor/javascripts/* client/public/javascripts"
+  vendorcss = exec "cp client/vendor/stylesheets/* client/public/stylesheets"
 
   serv.stdout.on 'data', (data)-> process.stdout.write data
   watch.stdout.on 'data', (data)-> process.stdout.write data
   sass.stdout.on 'data', (data)-> process.stdout.write data
+  vendorjs.stdout.on 'data', (data)-> process.stdout.write data
+  vendorcss.stdout.on 'data', (data)-> process.stdout.write data
 
   serv.stderr.on 'data', (data)-> process.stderr.write data
   watch.stderr.on 'data', (data)-> process.stderr.write data
   sass.stderr.on 'data', (data)-> process.stderr.write data
+  vendorjs.stderr.on 'data', (data)-> process.stderr.write data
+  vendorcss.stderr.on 'data', (data)-> process.stderr.write data
 
 task 'build', 'compiled the server into build/server', ->
   mkpub  = exec "mkdir -p build/client build/client/public build/client/public/stylesheets"
@@ -53,7 +57,19 @@ task 'build', 'compiled the server into build/server', ->
   watch  = exec "coffee -j #{outJS}.js -cb #{strFiles}"
   sass   = exec "sass --watch client/app/sass:client/public/stylesheets"
 
+  vendorjs  = exec "cp client/vendor/javascripts/* client/public/javascripts"
+  vendorcss = exec "cp client/vendor/stylesheets/* client/public/stylesheets"
+
   cppck  = exec "cp package.json build"
   cppub  = exec "cp -rf client/public build/client"
 
   setTimeout (() => sass.kill()), 1000
+
+
+
+
+
+
+
+
+

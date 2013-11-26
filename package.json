@@ -14,9 +14,9 @@
   "engine": "node >= 0.4.1",
   "subdomain": "corgicards",
   "scripts": {
-    "start": "coffee server/server.coffee"
+    "start": "node server/server.js"
   },
-  "version": "0.0.0-8",
+  "version": "0.0.0-11",
   "engines": {
     "node": "0.10.x"
   }

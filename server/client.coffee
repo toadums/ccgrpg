@@ -75,7 +75,7 @@ class Client
       Rooms[@player.room].changeTurns()
 
     @socket.on "CardMoved", (data) =>
-      io.sockets.in(@player.room).emit "CardMoved", data
+      @socket.broadcast.to(@player.room).emit "CardMoved", data
       return unless (card = Rooms[@player.room].getCard data.cardId)?
 
       card.x = data.x
