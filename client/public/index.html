@@ -12,6 +12,12 @@
   <!-- ko if: loggedIn -->
 
     <!-- ko with: room -->
+      <!-- ko if: gameOverMessage -->
+        <section id="game-over">
+          <div class="message" data-bind="text: gameOverMessage"></div>
+          <button class="lobby" data-bind="click: goToLobby">Back to Lobby</button>
+        </section>
+      <!-- /ko -->
       <!-- ko ifnot: name() == 'Lobby' -->
       <section id="board" data-bind="droppable: {drop: handleDrop, accept: '.my.hand .card'}, foreach: activeCards">
         <!-- ko template: {name: 'template-card'} --><!-- /ko -->
@@ -32,7 +38,7 @@
             }
 
             "></aside>
-          <div class="name" data-bind="text: name"></div>
+          <div class="name">Me</div>
           <ul class="stats" data-bind="foreach: stats">
             <li data-bind="attr: {class: name}, css:{add:$parent.showResourceAdd}, click: add">
               <img data-bind="attr: {src:'images/' + name() + '.png'}">
@@ -99,6 +105,45 @@
     </form>
     <!-- /ko -->
   <!-- /ko -->
+
+  <article id="guide" data-bind="visible: showGuide, click: showHideGuide">
+    <h1>Welcome to Corgi Cards: With a Vengeance</h1>
+    <h3> To join a random room with a random opponent, enter "??" as your room name</h3>
+    <h2>Rules</h2>
+    <ul class="rules">
+      <li>Each turn you may add one stat point, either strength or intel</li>
+      <li>Strength is used to play monsters</li>
+      <li>Intel is used to play spells</li>
+      <li>Stats cannot be used in place of another</li>
+      <li class="break">On each turn you can do as much stuff as your stats will allow</li>
+      <li>To play a card, make sure your stats are good enough, and drop it onto the board!</li>
+      <li>Monsters can attack the turn they are played</li>
+      <li>Monsters can attack once per turn</li>
+      <li>A monster can attack either your opponent, or any monster you choose</li>
+      <li class="break">Spells can be played, and activated on different turns (your turn only, however)</li>
+      <li><b>To attack or activate a spell, you click on your spell/monster then the target (player or monster), then your card again to confirm</b></li>
+    </ul>
+
+    <h2> Cards </h2>
+    <ul class="card-desc">
+      <li> Now you might be wondering what all the numbers on the cards are for...</li>
+      <li>
+        <img src="images/monster-desc.png">
+      </li>
+      <li>
+        <img src="images/spell-desc.png">
+      </li>
+    </ul>
+
+    <h2>Spells</h2>
+    <ul class="cards">
+      <li class="card-info"> Purple Hat: Damage (to monster or player)</li>
+      <li class="card-info"> White Hat: Heal (monster or player)</li>
+      <li class="card-info"> Magicians Hat: Draw (player only)</li>
+    </ul>
+  </article>
+
+  <button id="show-guide" data-bind="click:showHideGuide, css: {'show-guide':showGuide}">?</button>
 
 
   <script src="javascripts/socket.io.js"></script>

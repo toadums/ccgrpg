@@ -3,8 +3,10 @@ class Server
     @host = window.location.origin
     @socket = io.connect(@host)
 
-    @socket.emit "UserConnected", Math.random()
-    @socket.emit "RoomChange", {name: "r1"}
+    # Uncomment these for testing, auto signs you in for fast workin
+
+    #@socket.emit "UserConnected", Math.random()
+    #@socket.emit "RoomChange", {name: "r1"}
 
     console.log "You are connected to: #{@host}"
 

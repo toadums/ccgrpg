@@ -20,6 +20,14 @@ class Room
     @active = null
     @target = null
 
+  checkWinner: (cb) =>
+    if @player1?.life <= 0
+      cb {playerId: @player2.id}
+      return true
+    else if @player2?.life <= 0
+      cb {playerId: @player1.id}
+      return true
+
   addPlayer: (player) =>
 
     if @name is 'Lobby' or (@player1? and @player2?)

@@ -5,6 +5,8 @@ class RoomViewModel
       @loggedIn
     } = @delegate
 
+    @turn = ko.observable 0
+
     @socket = @server.socket
     @name = ko.observable name
 
@@ -50,6 +52,8 @@ class RoomViewModel
                 @player2()
             else null)
       }
+
+    @gameOverMessage = ko.observable null
 
     @activeCards = ko.computed =>
       cards = []
@@ -125,10 +129,10 @@ class RoomViewModel
     @socket.on "RoomChange", (data) =>
 
       # TODO: Clear hands, decks, etc...Basically reset the player cept the name
-
+      game.showGuide false
       @player1 null
       @player2 null
-
+      @gameOverMessage null
       @name data.name
 
       @addOrCreatePlayer data.player1
@@ -167,6 +171,11 @@ class RoomViewModel
       @activePlayer data.activePlayer
       @activePlayer().startTurn()
 
+      @turn(@turn() + 1)
+
+      _.each @activePlayer().activeCards.cards(), (card) =>
+        $("#card_#{card.id()}").zIndex @turn()
+
     @socket.on "ActiveChanged", (data) =>
       if not data.id? then @active null
       if (card = @findCard(data.id))?
@@ -192,11 +201,19 @@ class RoomViewModel
       @player().clear()
       @player1 null
       @player2 null
+      @gameOverMessage null
+      game.showGuide false
 
       @name "Lobby"
 
     @socket.on "PlayerLeft", () =>
       @socket.emit "PlayerLeft"
+
+    @socket.on "GameOver", (data) =>
+      if data.playerId is @player().id()
+        @gameOverMessage "$!@* YA YOU $!@*ING WON!!! Speech, Speech, Speech, SPEEEEEEECH!!!!!!!!"
+      else
+        @gameOverMessage "Wow. You lost."
 
   addOrCreatePlayer: (data) =>
     return unless data?
@@ -304,6 +321,10 @@ class RoomViewModel
   removeCard: (id) =>
     @player1().activeCards.remove(id)
     @player2().activeCards.remove(id)
+
+  goToLobby: () =>
+    @socket.emit "RoomChange", {name: "Lobby"}
+
 
 
 

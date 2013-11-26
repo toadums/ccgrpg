@@ -8,8 +8,13 @@ class GameViewModel
 
     @room = ko.observable(new RoomViewModel @, "Lobby")
 
+    @showGuide = ko.observable false
+
+  showHideGuide: () =>
+    @showGuide !@showGuide()
+
+game = new GameViewModel
 
 $ ->
-  game = new GameViewModel
 
   ko.applyBindings game, $('html').get(0)

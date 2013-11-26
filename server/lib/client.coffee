@@ -34,7 +34,13 @@ class Client
       @socket.emit "UserConnected", obj
 
     @socket.on "RoomChange", (data) =>
-      if not (room = Rooms[data.name])?
+
+      if data.name is '??'
+        room = _.find Rooms, (value, key) =>
+          not (value.player2? and value.player1?) and value.name isnt "Lobby"
+        if not room?
+          room = (Rooms[data.name] = new Room Math.random())
+      else if not (room = Rooms[data.name])?
         room = (Rooms[data.name] = new Room data.name)
 
       @joinRoom room
@@ -61,6 +67,9 @@ class Client
       gameData = room.startNewGame(@socket)
 
     @socket.on "TurnEnd", () =>
+
+      return if (Rooms[@player.room].checkWinner (message) => io.sockets.in(@player.room).emit "GameOver", message)
+
       Rooms[@player.room].cleanup (message) => io.sockets.in(@player.room).emit "CardRemove", message
       Rooms[@player.room].changeTurns()
 
