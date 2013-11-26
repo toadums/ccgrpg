@@ -3,3 +3,4 @@ node_modules
 client/public/javascripts
 client/public/stylesheets
 .sass-cache
+build

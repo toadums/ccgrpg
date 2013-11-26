@@ -5,10 +5,19 @@
   "dependencies": {
     "underscore": "*",
     "express": "*",
-    "async": ""
+    "async": "*",
+    "socket.io": "*"
   },
   "devDependencies": {
     "vows": "0.5.x"
   },
-  "engine": "node >= 0.4.1"
+  "engine": "node >= 0.4.1",
+  "subdomain": "corgicards",
+  "scripts": {
+    "start": "coffee server/server.coffee"
+  },
+  "version": "0.0.0-8",
+  "engines": {
+    "node": "0.10.x"
+  }
 }

@@ -17,7 +17,6 @@ server.listen(port)
 io.set('log level', 0)
 console.log "Listening on port #{port}"
 
-
 root.Rooms = {}
 
 Rooms.Lobby = new Room 'Lobby'
